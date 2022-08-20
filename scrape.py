@@ -28,17 +28,19 @@ def download_discourse(url: str, base_dir: str):
 	audio_igniter = soup.find('div', attrs={'class': 'audioigniter-root'})['data-tracks-url']
 	tracks = requests.get(audio_igniter, headers=headers).json()
 	for track in tracks:
-		if os.path.isfile(path=discourse_dir + '/' + track['downloadFilename']):
+		fileName = track['downloadFilename'] or track['title'] + '.mp3'
+		downloadURL = track['downloadUrl'] or track['audio']
+		if os.path.isfile(path=discourse_dir + '/' + fileName):
 			print('Track ' + track['title'] + ' already exists. Skipping...')
 			continue
 
-		print('>> Downloading ' + track['downloadFilename'] + ' : ' + track['downloadUrl'])
-		dl = SmartDL(track['downloadUrl'], dest=discourse_dir + '/' + track['downloadFilename'], timeout=600)
+		print('>> Downloading ' + fileName + ' : ' + downloadURL)
+		dl = SmartDL(downloadURL, dest=discourse_dir + '/' + fileName, timeout=600)
 		dl.start()
 		if dl.isFinished() and dl.isSuccessful():
-			print('>> Downloaded ' + track['downloadFilename'])
+			print('>> Downloaded ' + fileName)
 		else:
-			print('>> Failed to download ' + track['downloadFilename'])
+			print('>> Failed to download ' + fileName)
 	
 
 for alphabet in alphabets:

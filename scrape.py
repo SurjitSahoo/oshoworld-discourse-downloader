@@ -28,14 +28,14 @@ def cached_get(url: str, is_json=False):
 	filePath = os.path.join(os.getcwd(), cache_dir, fileName + '.json' if is_json else fileName + '.html')
 
 	if os.path.isfile(path=filePath):
-		if is_json:
-			with open(filePath, 'r') as f:
+		with open(filePath, 'rt', encoding='utf-8') as f:
+			if is_json:
 				return json.load(f)
-		else:
-			return open(filePath, mode='rt', encoding='utf-8').read()
+			else:
+				return f.read()
 	else:
 		req = requests.get(url, headers=headers)
-		content = req.json() if json else requests.get(url, headers=headers).text
+		content = req.json() if is_json else requests.get(url, headers=headers).text
 		with open(filePath, mode='wt', encoding='utf-8') as f:
 			if is_json:
 				f.write(json.dumps(content))

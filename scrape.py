@@ -63,11 +63,15 @@ def download_discourse(url: str, base_dir: str):
 
 		print('>> Downloading ' + fileName + ' : ' + downloadURL)
 		dl = SmartDL(downloadURL, dest=discourse_dir + '/' + fileName, timeout=600)
-		dl.start()
-		if dl.isFinished() and dl.isSuccessful():
-			print('>> Downloaded ' + fileName)
-		else:
-			print('>> Failed to download ' + fileName)
+		try:
+			dl.start()
+			if dl.isFinished() and dl.isSuccessful():
+				print('>> Downloaded ' + fileName)
+			else:
+				print('>> Failed to download ' + fileName)
+		except Exception as e:
+			print('>>>> exception', e)
+			continue
 	
 
 for alphabet in alphabets:
